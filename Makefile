@@ -8,16 +8,11 @@ CPP=$(PICO_TOOLCHAIN_PATH)/bin/arm-none-eabi-cpp
 CC=$(PICO_TOOLCHAIN_PATH)/bin/arm-none-eabi-gcc
 AS=$(PICO_TOOLCHAIN_PATH)/bin/arm-none-eabi-as
 
-
-
 SRC=main.c second.c
 OBJS=$(patsubst %.c,%.o,$(SRC))
 
-
-
 firmware.elf: $(OBJS)
 	$(CC) -o $@ $^ --specs=nosys.specs
-
 
 %.i: %.c
 	$(CPP) $< > $@
@@ -25,8 +20,10 @@ firmware.elf: $(OBJS)
 %.s: %.i
 	$(CC) -S $< -o $@
 
-%.o: %.s
-	$(AS) $< -o $@
+%.o: %.c
+	$(CPP) $< > $*.i
+	$(CC) -S $*.i -o $*.s
+	$(AS) $*.s -o $@
 
 .PHONY: clean all
 
