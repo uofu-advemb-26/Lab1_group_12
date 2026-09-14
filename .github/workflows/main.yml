@@ -1,0 +1,53 @@
+name: CMake
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean workspace
+        run: |
+          echo "Cleaning up previous run"
+          rm -rf "${{ github.workspace }}"
+          mkdir -p "${{ github.workspace }}"
+
+      - name: Install GCC
+        id: arm-none-eabi-gcc-action
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: '13.2.Rel1'
+
+      - uses: actions/checkout@v3
+        with:
+          path: ${{github.workspace}}/source
+
+      - name: Say hello
+        shell: bash
+        working-directory: ${{github.workspace}}/source
+        run: |
+            ls
+            test ! -f hello.txt
+            test ! -f main.o
+            test ! -f main.i
+            test ! -f main.s
+            make hello.txt
+            test -f hello.txt
+
+      - name: Test Compile
+        shell: bash
+        working-directory: ${{github.workspace}}/source
+        run: |
+            test ! -f firmware.elf
+            PICO_TOOLCHAIN_PATH=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/.. make firmware.elf
+            test -f firmware.elf
+
+      - name: Test Clean
+        shell: bash
+        working-directory: ${{github.workspace}}/source
+        run: |
+            make clean
+            test ! -f hello.txt
+            test ! -f main.o
+            test ! -f main.i
+            test ! -f main.s
+            test ! -f firmware.elf

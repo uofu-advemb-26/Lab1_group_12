@@ -1,5 +1,4 @@
-int main(void) {
-    printf("empty file");
+int second(void) {
     return 0;
 }
 // A comment
