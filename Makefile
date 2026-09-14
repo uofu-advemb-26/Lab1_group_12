@@ -1,3 +1,8 @@
+all: firmware.elf
+
+hello.txt:
+	echo "hello world!" > hello.txt
+
 PICO_TOOLCHAIN_PATH?=~/.pico-sdk/toolchain/13_2_Rel1
 CPP=$(PICO_TOOLCHAIN_PATH)/bin/arm-none-eabi-cpp
 CC=$(PICO_TOOLCHAIN_PATH)/bin/arm-none-eabi-gcc
@@ -8,10 +13,7 @@ AS=$(PICO_TOOLCHAIN_PATH)/bin/arm-none-eabi-as
 SRC=main.c second.c
 OBJS=$(patsubst %.c,%.o,$(SRC))
 
-all: firmware.elf
 
-hello.txt:
-	echo "hello world!" > hello.txt
 
 firmware.elf: $(OBJS)
 	$(CC) -o $@ $^ --specs=nosys.specs
