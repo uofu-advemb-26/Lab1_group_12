@@ -28,4 +28,4 @@ firmware.elf: $(OBJS)
 .PHONY: clean all
 
 clean:
-	rm -f *.o *.i *.s firmware.elf
+	rm -f *.o *.i *.s firmware.elf hello.txt
